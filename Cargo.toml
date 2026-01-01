@@ -4,9 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+async-trait = "0.1.89"
 clap = { version = "4.5.53", features = ["derive"] }
+reqwest = "0.13.1"
 serde = { version = "1.0.228", features = ["derive"] }
 thiserror = "2.0.9"
+tokio = "1.48.0"
 toml = "0.9.10"
 tracing = "0.1.44"
 tracing-appender = "0.2.4"
