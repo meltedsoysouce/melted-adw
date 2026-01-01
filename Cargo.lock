@@ -186,6 +186,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "serde",
+ "thiserror",
  "toml",
  "tracing",
  "tracing-appender",
