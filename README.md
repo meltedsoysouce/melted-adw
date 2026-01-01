@@ -162,7 +162,3 @@ model_tier = "medium"
 - **非同期**: tokio
 - **HTTP**: reqwest
 - **テレメトリー**: serde_json → DuckDB（将来）
-
-## ライセンス
-
-MIT License
