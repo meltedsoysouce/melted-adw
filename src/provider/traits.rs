@@ -116,7 +116,7 @@ pub struct ProviderResponse {
 }
 
 /// トークン使用量
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, serde::Serialize)]
 pub struct TokenUsage {
     /// 入力トークン数（プロンプト）
     pub input_tokens: u32,

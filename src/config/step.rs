@@ -18,7 +18,7 @@ use super::dto::WorkflowStepDto;
 /// ## DTO との違い
 ///
 /// - [`WorkflowStepDto`](super::dto::WorkflowStepDto): TOML デシリアライズ専用
-/// - [`WorkflowStep`]: バリデーション済み、ドメインロジックを持つ
+/// - [`WorkflowStep`][]: バリデーション済み、ドメインロジックを持つ
 #[derive(Debug, Clone)]
 pub struct WorkflowStep {
     /// ステップ名

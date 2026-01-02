@@ -27,7 +27,7 @@ fn test_workflow_roundtrip_with_real_file() {
     let toml_string = original.to_string().expect("Failed to serialize");
 
     // Parse back from string
-    let restored = Workflow::from_str(&toml_string).expect("Failed to parse");
+    let restored = Workflow::from_toml(&toml_string).expect("Failed to parse");
 
     // Verify they match
     assert_eq!(restored.name(), original.name());

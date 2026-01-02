@@ -44,9 +44,9 @@
 //!
 //! ## 関連モジュール
 //!
-//! - [`crate::config::step`]: 各ステップの定義
-//! - [`crate::engine::executor`]: ワークフローの実行エンジン
-//! - [`crate::telemetry`]: ワークフロー実行時のメトリクス収集
+//! - [`crate::config::step`][]: 各ステップの定義
+//! - [`crate::engine::executor`][]: ワークフローの実行エンジン
+//! - [`crate::telemetry`][]: ワークフロー実行時のメトリクス収集
 
 use std::path::Path;
 
@@ -62,7 +62,7 @@ use super::dto::WorkflowDto;
 /// ## DTO との違い
 ///
 /// - [`WorkflowDto`]: TOML デシリアライズ専用、バリデーション前の生データ
-/// - [`Workflow`]: バリデーション済み、ドメインロジックを持つ
+/// - [`Workflow`][]: バリデーション済み、ドメインロジックを持つ
 #[derive(Debug, Clone)]
 pub struct Workflow {
     /// ワークフロー名
@@ -116,7 +116,7 @@ impl Workflow {
     /// * `Err(ConfigError)` - ファイルの読み込みまたはパースに失敗した場合
     pub fn from_file(path: impl AsRef<Path>) -> Result<Self, ConfigError> {
         let content = std::fs::read_to_string(path)?;
-        Self::from_str(&content)
+        Self::from_toml(&content)
     }
 
     /// TOML 文字列からワークフローを読み込む
@@ -134,7 +134,7 @@ impl Workflow {
     ///
     /// * `Ok(Workflow)` - パースに成功した場合
     /// * `Err(ConfigError)` - パースに失敗した場合
-    pub fn from_str(toml: &str) -> Result<Self, ConfigError> {
+    pub fn from_toml(toml: &str) -> Result<Self, ConfigError> {
         let dto: WorkflowDto = toml::from_str(toml)?;
         dto.try_into()
     }
@@ -208,7 +208,7 @@ impl TryFrom<WorkflowDto> for Workflow {
         // 各ステップを変換（バリデーションも同時に実行）
         let steps: Result<Vec<WorkflowStep>, ConfigError> = dto.steps
             .into_iter()
-            .map(|step_dto| WorkflowStep::try_from(step_dto))
+            .map(WorkflowStep::try_from)
             .collect();
         let steps = steps?;
 
@@ -580,7 +580,7 @@ timeout = 120
 retry_count = 3
 "#;
 
-        let result = Workflow::from_str(toml);
+        let result = Workflow::from_toml(toml);
         assert!(result.is_ok());
 
         let workflow = result.unwrap();
@@ -600,7 +600,7 @@ retry_count = 3
 name = "broken"
 "#;
 
-        let result = Workflow::from_str(invalid_toml);
+        let result = Workflow::from_toml(invalid_toml);
         assert!(result.is_err());
 
         // ConfigError::TomlDeserialize エラーが返されることを確認
@@ -626,7 +626,7 @@ provider = "anthropic"
 model_tier = "heavy"
 "#;
 
-        let result = Workflow::from_str(toml);
+        let result = Workflow::from_toml(toml);
         assert!(result.is_err());
 
         // ConfigError::Validation エラーが返されることを確認
@@ -656,7 +656,7 @@ model_tier = "heavy"
         let toml_string = original_workflow.to_string().unwrap();
 
         // TOML文字列 → ドメインモデル
-        let restored_workflow = Workflow::from_str(&toml_string).unwrap();
+        let restored_workflow = Workflow::from_toml(&toml_string).unwrap();
 
         // 元のデータと復元されたデータが一致することを確認
         assert_eq!(restored_workflow.name(), original_workflow.name());
